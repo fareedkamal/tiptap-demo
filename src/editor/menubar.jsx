@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -117,6 +117,17 @@ const TextSelection = ({ editor }) => {
   const handleChange = (event) => {
     setStyle(event.target.value);
   };
+
+  useEffect(() => {
+    const { $from, $to } = editor.state.selection;
+    const node = $from.node($from.depth);
+    if (node.type.name === 'heading') {
+      const level = node.attrs.level;
+      setStyle(`h${level}`);
+    } else if (node.type.name === 'paragraph') {
+      setStyle('paragraph');
+    }
+  }, [editor.state]);
 
   return (
     <Select value={style} onChange={handleChange}>
